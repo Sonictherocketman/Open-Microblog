@@ -253,7 +253,7 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 		<lastBuildDate></lastBuildDate>
 		<item>
 			<!-- Status Update -->
-			<status_id></status_id>
+			<guid></guid>
 			<pubdate></pubdate>
 			<description><![CDATA[]]></description>
 			<!-- Replying -->
