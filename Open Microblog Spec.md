@@ -2,15 +2,12 @@
 # Open Microblog
 ================================================================
 
-**Version:** 
-> 0.3 InDev 
-> Added descriptions to the definition of the 3 feed types.
+**Version:** 0.3 InDev 
 
-**Last Updated:** 
-> Sept 14, 2014
+**Last Updated:** Sept 14, 2014
 
 **Known Bugs/Issues:**
-> - In the sample feed, the root element is 'rss'. As of v0.2 it is a straight port of the RSS root element, this will be fixed..
+- In the sample feed, the root element is 'rss'. As of v0.2 it is a straight port of the RSS root element, this will be fixed..
 
 ================================================================
 **Overview**
