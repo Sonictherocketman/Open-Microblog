@@ -221,7 +221,7 @@ Coming soon. Finalizing details.
 
 The feed below contains _all_ the possible elements in a single feed. Keep in mind that not all of these elements will be present at one time.
 ``` xml
-<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+<rss xmlns:content="" version="2.0">
 	<channel>
 		<!-- User Info -->
 		<username></username>
@@ -296,7 +296,7 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 
 The feed below contains _all_ the possible elements in a single feed. Keep in mind that not all of these elements will be present at one time.
 ``` xml
-<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+<rss xmlns:content="" version="2.0">
 	<channel count="">
 		<username></username>
 		<user_id></user_id>
