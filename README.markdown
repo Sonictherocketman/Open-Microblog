@@ -75,11 +75,11 @@ A given user wanting to subscribe to, or "Follow" another user needs only the Fe
 
 ### Blocks
 
-The blocks XML file](#block) is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to block. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the [Feed Paging section.
+The blocks XML file is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to block. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the [Feed Paging section.
 
 ### Follows
 
-The follows XML file](#following) is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to follow. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the [Feed Paging section.
+The follows XML file is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to follow. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the [Feed Paging section.
 
 ## Why doesn't it have a cool name?
 
