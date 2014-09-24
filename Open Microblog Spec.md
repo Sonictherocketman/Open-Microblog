@@ -6,9 +6,6 @@
 
 **Last Updated:** Sept 14, 2014
 
-**Known Bugs/Issues:**
-- In the sample feed, the root element is 'rss'. As of v0.2 it is a straight port of the RSS root element, this will be fixed..
-
 ================================================================
 **Overview**
 - What is this
