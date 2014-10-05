@@ -41,13 +41,11 @@
 
 # Overview
 
-## What is this?
+## What is the problem?
 
 In recent years our internet communication has been increasingly controlled by sole private companies. Facebook and Twitter account for an enormous percentage of online communication. This isn't good. Private companies (that aren't treated as utilities) have a number of factors that prevent them from being pure communications networks. Private companies need to make money, then need to constantly make *more* money, and they need to serve changing needs. They need to upgrade their service and add "features". This means that their goals will never align entirely with the goal of open, untampered internet communication. There's one more problem: Private companies can die. They go away. Twitter and Facebook sit high now, but in 10 years? 5 years even? Will they still be around? Its hard to say. Communications that are tied to services and companies like this will die with the companies that built them. This is the problem that the Open Microblog tries to solve.
 
-The Open Microblog is a proposed standard for an open and easy to implement internet communication mechanism. It is based on the success of RSS and is platform independent. It allows for most of the features that services like Twitter and Facebook provide but in an open way.
-
-## What is it used for?
+## What does Open Microblog do to solve it?
 
 Open Microblogger is an open standard for a distributed, real-time, internet based communications service. Using a model based on RSS, Open Microblogger allows developers and users to host their own microblogging service modeled after Twitter. The biggest upside to Open Microblogger is that it isn't controlled by a central corporation or body thus it remains, like RSS, outside the realm of corporate reach.
 
