@@ -43,21 +43,21 @@
 
 ## What is this?
 
-In recent years our internet communication has been increasingly controlled by single private companies. Facebook and Twitter account for an enormous percentage of online communication. This isn't good. Private companies (that aren't treated as utilities) have a number of factors that prevent them from being pure communications networks. Private companies need to make money, then need to constantly make *more* money, and they need to serve changing needs. They need to upgrade their service and add "features". This means that their goals will never align entirely with the goal of open, untampered internet communication. There's one more problem: Private companies can die. They go away. Twitter and Facebook sit high now, but in 10 years? 5 years even? Will they still be around? Its hard to say. Communications that are tied to services and companies like this will die with the companies that built them. This is the problem that the Open Microblog tries to solve.
+In recent years our internet communication has been increasingly controlled by sole private companies. Facebook and Twitter account for an enormous percentage of online communication. This isn't good. Private companies (that aren't treated as utilities) have a number of factors that prevent them from being pure communications networks. Private companies need to make money, then need to constantly make *more* money, and they need to serve changing needs. They need to upgrade their service and add "features". This means that their goals will never align entirely with the goal of open, untampered internet communication. There's one more problem: Private companies can die. They go away. Twitter and Facebook sit high now, but in 10 years? 5 years even? Will they still be around? Its hard to say. Communications that are tied to services and companies like this will die with the companies that built them. This is the problem that the Open Microblog tries to solve.
 
 The Open Microblog is a proposed standard for an open and easy to implement internet communication mechanism. It is based on the success of RSS and is platform independent. It allows for most of the features that services like Twitter and Facebook provide but in an open way.
 
 ## What is it used for?
 
-Open Microblogger is an open standard for a distributed, real-time, internet based communications service. Using a model based on RSS, Open Microblogger allows developers and/or users to host their own microblogging service modeled after Twitter. The biggest upside to Open Microblogger is that it isn't controlled by a central corporation or body thus it remains, like RSS, outside the realm of corporate reach.
+Open Microblogger is an open standard for a distributed, real-time, internet based communications service. Using a model based on RSS, Open Microblogger allows developers and users to host their own microblogging service modeled after Twitter. The biggest upside to Open Microblogger is that it isn't controlled by a central corporation or body thus it remains, like RSS, outside the realm of corporate reach.
 
 Social Networks are the cornerstone of the modern internet world. People all over the world use them to communicate with each other. The importance of this information being tamper-free and delivered in real-time is one thing that services like Twitter have excelled at recently. However services like Twitter and Facebook are controlled by a single entity, the fate's of all the information they carry is dictated by the needs of that particular company needing to make money. This means that our communication, the things we use to share events and news around the world is controlled by a single company and it's pockets.
 
-Information regarding world events, social injustice, and social upheaval is just too much to allow a single corporation to handle. Not for any act of malevolence by that company but rather because companies need to make money, and if they don't they could disappear. If Twitter disappeared tomorrow, the world would almost certainly cease to hear about events all over the world and would have to go backward to other means. The idea of Twitter, of instant access to the information you want from the source is too good to let die or be corrupted. That is the mission of Open Microblogger, to create a standard by which anyone can develop a system, free of corporate overlords, that users can use to plug into the web of information that is microblogging.
+Information regarding world events, social injustice, and social upheaval is just too valuable to allow a single corporation to control. If Twitter disappeared tomorrow, the world would almost certainly cease to hear about events all over the world and would have to go backward to other means. The idea of Twitter, of instant access to the information you want from the source is too good to let die or be corrupted. That is the mission of Open Microblogger.
 
 ## Why not just use RSS? It's already there...
 
-True, but the Open Microblogger Standard allows for more social interaction and functionality than the broadcast-only medium that is RSS. Open Microblogger is meant to supplement RSS as another means of communicating. You'll see further down, there is a lot that Open Microblogger can do that RSS just can't.
+True, but the Open Microblogger Standard allows for more social interaction and functionality than the broadcast-only medium that is RSS. Open Microblogger is meant to supplement RSS as another means of communicating. You'll see further down, there is a lot that Open Microblogger can do that RSS just can't. Plus Open Microblogger aims to be as RSS compliant as possible and should be compatible in most RSS readers already.
 
 ## How does it work?
 
@@ -75,11 +75,11 @@ A given user wanting to subscribe to, or "Follow" another user needs only the Fe
 
 ### Blocks
 
-The blocks XML file is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to block. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the [Feed Paging section.
+The blocks XML file is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to block. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the Feed Paging section.
 
 ### Follows
 
-The follows XML file is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to follow. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the [Feed Paging section.
+The follows XML file is linked to from the main Feed URL and contains an itemized list of the users (including user ids, usernames, and user link URLs) that the user has chosen to follow. If this list becomes longer than 500 kB or 500 items, then it should be paginated as noted in the Feed Paging section.
 
 ## Why doesn't it have a cool name?
 
@@ -104,7 +104,7 @@ _Service's Level_: Any functionality or feature-set provided by a given service.
 
 Each user has a feed. This feed should follow the format listed in section 3. The feed represents the user's post history (what they've posted, reposted, and replies they've sent). This feed also contains certain metadata about the user including their username, user\_id, reply\_to information, and their most recent statuses.
 
-Its important to remember that the feed holds the truth. There is not central database for user data, and all of a user's posts should be able to be found by traversing the feed and following public URLs found in it.
+Its important to remember that the feed holds the truth. There is no central database for user data, and all of a user's posts should be able to be found by traversing the feed and following public URLs found in it.
 
 ### Feed Paging
 
@@ -144,26 +144,44 @@ The question remains, what of Replies/Mentions from those that a user doesn't fo
 
 In the channel declaration an optional element can be declared called reply\_to. If a given service chooses to implement this feature, the reply\_to element contains a simple set of elements that allow the client to form a URL string with the required data to the service of the user being replied to. Services opting-in to Mentions should be able to receive URL request messages from this URL and pass them on to the user they belong to.
 
+An example of a Mentions URL is provided below in both what should be supplied via the User's feed and what the end result URL will look like.
+
+```xml
+<reply_to>
+	<!-- The provided URL data -->
+	<url>http://service.tld/reply</url>
+	<reply_to_user_id>sample_userid</reply_to_user_id>
+	<!-- Required Misc data that the sender must include -->
+	<reply_to_status_id />
+	<reply_from_user_id />
+	<reply_status_id />
+	<user_link />
+</reply_to>
+```
+
+Let's assume I wish to reply to sample\_user's post (status\_id 501) with my post (status\_id 2034). 
+
+```url
+http://service.tld/reply?reply_to_user_id=sample_username&reply_to_status_id=501&reply_from_user_id=my_userid&reply_status_id=2034&user_link=http%3A%2F%2Fother_service.tld%2Fmy_username
+```
+
 ## Blocking
 
 Due to the distributed and therefore uncurated nature of this communication network some users may wish to ban others from following/messaging them. This is a service level feature. Services must implement this feature independently, however a preferred format is provided for listing accounts the user wished blocked from contacting them. This will help the user retain these blocking options if they chose to migrate to another service. An optional tag may be inserted into the user's feed which links to the file that describes the user's blocking preferences. See Additional Feeds.
 
-Services should give the user's the option of making this feature publicly visible or not.
+Services should give the user's the option of making this feature publicly visible or not. Note that if the user's block list is private, they will not be able to transfer it to another service.
 
 ## Following 
 
 Just like with RSS, users are given a list of statuses in their timeline of the posts of people/accounts they follow. Similarly to blocking, the implementation of Following a user is up to the service, however a preferred format is provided. An optional tag may be included in the user's main feed which links to the user's followers list. See Additional Feeds.
 
-Services should give the user's the option of making this feature publicly visible or not.
+Services should give the user's the option of making this feature publicly visible or not. Note that, like blocking, if the user's following list is private, they will not be able to transfer it to another service.
 
 ## Followers
 
 Followers (just like with Twitter) are people that will receive posts from a given user. A user will often have multiple followers. 
 
 Because of the distributed nature of the system, gauging exact follower counts becomes challenging and as of version 0.1 there is no way to determine exactly the number of followers a given user has.
-
-
-Coming soon. Finalizing details.
 
 ================================================================
 
@@ -172,7 +190,7 @@ Coming soon. Finalizing details.
 ## Required Channel Elements
 
 - username: A Twitter-like username. Must no greater than 25 characters. 
-- user\_id: A universally unique (or as close as possible) id. This identifies the user.
+- user\_id: A universally unique (or as close as possible) id. This identifies the user. (Think UUID)
 - link: URL to the feed. If the feed is paginated, then the link to the most recent page. 
 - language: The main language for the feed. 
 - lastBuildDate: The date and time that the last item was added to the feed.
@@ -236,9 +254,11 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 		<follows count=""></follows>
 		<!-- Reply and Mention URL -->
 		<reply_to>
-			<url></url>
-			<reply_to_user></reply_to_user>
-			<reply_to_status></reply_to_status>
+			<!-- The provided URL data -->
+			<url>http://service.tld/reply</url>
+			<reply_to_user_id>sample_userid</reply_to_user_id>
+			<!-- Required Misc data that the sender must include -->
+			<reply_to_status_id />
 			<reply_from_user_id />
 			<reply_status_id />
 			<user_link />
