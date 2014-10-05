@@ -7,8 +7,8 @@
 
 ================================================================
 **Overview**
-- What is this
-- What is it used for?
+- What is the problem?
+- What does Open Microblog do to solve it?
 - Why not just use RSS? It's already there...
 - How does it work?
 - Why doesn't it have a cool name?
