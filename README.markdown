@@ -1,7 +1,7 @@
 
 # Open Microblog
 
-**Version:** 0.3 InDev 
+**Version:** 0.4
 
 **Last Updated:** Sept 14, 2014
 
