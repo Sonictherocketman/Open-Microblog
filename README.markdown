@@ -147,7 +147,7 @@ An example of a Mentions URL is provided below in both what should be supplied v
 ```xml
 <reply_to>
 	<!-- The provided URL data -->
-	<url>http://service.tld/reply</url>
+	<link>http://service.tld/reply</link>
 	<reply_to_user_id>sample_userid</reply_to_user_id>
 	<!-- Required Misc data that the sender must include -->
 	<reply_to_status_id />
@@ -253,7 +253,7 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 		<!-- Reply and Mention URL -->
 		<reply_to>
 			<!-- The provided URL data -->
-			<url>http://service.tld/reply</url>
+			<link>http://service.tld/reply</link>
 			<reply_to_user_id>sample_userid</reply_to_user_id>
 			<!-- Required Misc data that the sender must include -->
 			<reply_to_status_id />
