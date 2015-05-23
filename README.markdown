@@ -153,11 +153,11 @@ Messages should contain the following elements:
 - `message`: The text of the message. 
 - `date`: The date that the message was sent. This should be formatted according to 	RFC 822. However, in practice ISO 8601 and RFC 3339 may also be accepted.
 
-<pre><code>
+```
 POST {URL} HTTP/{version}
 
 {'user_id':'123432', 'username':'someusername', 'user_link': 'http://example.com/someusername/feed', 'message':'hello world!', 'date':'Sat, 16 May 2015 21:32:15 UTC'}
-</code></pre>
+```
 
 ### Receiving Private Messages
 
@@ -173,14 +173,14 @@ In the case that a given user replies to, or mentions another known user, the gi
 
 ### Example 
 
-<pre><code>
-\<item\>
-	\<guid\>3453-3433-dged-sfrf\</guid\>
-	\<description\>Anyone out there?\</description\>
-	\<pubDate\>Sat, 16 May 2015 21:32:15 UTC\</pubDate\>
-	\<reply\>http://example.com/myusername/status/3453-3433-dged-sfrf/reply\</reply\>
-\</item\>
-</pre></code>
+```xml
+<item>
+	<guid>3453-3433-dged-sfrf</guid>
+	<description>Anyone out there?</description>
+	<pubDate>Sat, 16 May 2015 21:32:15 UTC</pubDate>
+	<reply>http://example.com/myusername/status/3453-3433-dged-sfrf/reply</reply>
+</item>
+```
 
 ### Sending Replies/Mentions
 
@@ -193,11 +193,11 @@ Messages should contain the following elements:
 - `user_link`: The feed URL of the user sending the message.
 - `status_id`: The id of the status in the user's feed that contains the reply or mention. 
 
-<pre><code>
+```
 POST {URL} HTTP/{version}
 
 {'user_id':'123432', 'username':'someusername', 'user_link': 'http://example.com/someusername/feed', 'status_id':'2345-643f-ggdg'}
-</code></pre>
+```
 
 ### Receiving Replies/Mentions
 
