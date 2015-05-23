@@ -174,12 +174,12 @@ In the case that a given user replies to, or mentions another known user, the gi
 ### Example 
 
 <pre><code>
-<item>
-	<guid>3453-3433-dged-sfrf</guid>
-	<description>Anyone out there?</description>
-	<pubDate>Sat, 16 May 2015 21:32:15 UTC</pubDate>
-	<reply>http://example.com/myusername/status/3453-3433-dged-sfrf/reply</reply>
-</item>
+\<item\>
+	\<guid\>3453-3433-dged-sfrf\</guid\>
+	\<description\>Anyone out there?\</description\>
+	\<pubDate\>Sat, 16 May 2015 21:32:15 UTC\</pubDate\>
+	\<reply\>http://example.com/myusername/status/3453-3433-dged-sfrf/reply\</reply\>
+\</item\>
 </pre></code>
 
 ### Sending Replies/Mentions
