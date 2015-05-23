@@ -233,6 +233,7 @@ Because of the distributed nature of the system, gauging exact follower counts b
 
 - username: A Twitter-like username. Must no greater than 25 characters. 
 - user\_id: A universally unique (or as close as possible) id. This identifies the user. (Think UUID)
+- profile: A URL for the user's public page. This should be the human readable profile NOT the XML feed.
 - link: URL to the feed. If the feed is paginated, then the link to the most recent page. 
 - language: The main language for the feed. 
 - lastBuildDate: The date and time that the last item was added to the feed.
@@ -294,6 +295,7 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 		<user_full_name></user_full_name>
 		<description><![CDATA[]]></description>
 		<!-- Feed Metadata -->
+		<profile></profile>
 		<link></link>
 		<next_node></next_node>
 		<relocate></relocate>
@@ -310,7 +312,7 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 			<guid></guid>
 			<pubdate></pubdate>
 			<description><![CDATA[]]></description>
-			<!— Reply and Mention URL —>
+			<!-- Reply and Mention URL -->
 			<reply>http://example.com/{username}/status/{guid}</reply>
 			<!-- Replying -->
 			<in_reply_to_status_id></in_reply_to_status_id>
