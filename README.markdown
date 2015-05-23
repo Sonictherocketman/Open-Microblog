@@ -302,7 +302,7 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 		<blocks count=""></blocks>
 		<follows count=""></follows>
 		<!-- Private Messaging URL -->
-		<message></message>
+		<message accept="everyone"></message>
 		<!-- Misc. -->
 		<docs></docs>
 		<language></language>
