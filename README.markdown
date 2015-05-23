@@ -1,9 +1,9 @@
 
 # Open Microblog
 
-**Version:** 0.4
+**Version:** 0.5
 
-**Last Updated:** Sept 14, 2014
+**Last Updated:** 2015-05-23
 
 ================================================================
 **Overview**
@@ -17,6 +17,7 @@
 **Feed Features and Layout**
 - The Feed
 - Reposts
+- Private Messaging
 - Replies/Mentions
 - Blocking
 - Following
@@ -132,36 +133,79 @@ Clients who come across a \<relocate\> tag should immediately redirect their cra
 
 Reposting (similar to Twitter's retweeting) is the posting of someone else's post to your own timeline. The information from the original post is preserved in the reposted tags, and includes data link original user\_id, status\_id, and a link to that user's feed.
 
+## Private Messaging
+
+If a service supports private messaging, they will include a URL in the main feed called `message`. This URL will accept messages and pass them onto the user. The option of receiving either all private messages or only those from accounts that the user follows. 
+
+The `message` element should contain an attribute that informs other users about their messaging policy. If the user wishes to accept messages from everyone then the `message` element should contain an attribute `accept` with a value `everyone`. Else, the element should posses the same attribute with the value `follows`. A third option is for the attribute to contain a value of `selected` if the user wishes to receive messages from selected users that they may not follow.
+
+The `accept` attribute should inform other clients as to whether or not they should attempt to send messages to the user in question. If a client sees a value of `everyone` then the client should feel free to send messages. If the value is `follows` then it should be courteous and do the necessary checks if a user follows them before sending messages. If the value is `selected` the client should attempt the request, *but* should remember the response as to whether or not they are a whitelisted user, so as to not barrage the other clients with unnecessary messages.
+
+### Sending Private Messages
+
+To send messages, the URL in the `message` element should accept `HTTP POST` requests with a request body in the following JSON format:
+
+Messages should contain the following elements:
+
+- `user_id`: The id of the user who is sending the message.
+- `username`: The username of the user sending the message.
+- `user_link`: The feed URL of the user sending the message.
+- `message`: The text of the message. 
+- `date`: The date that the message was sent. This should be formatted according to 	RFC 822. However, in practice ISO 8601 and RFC 3339 may also be accepted.
+
+<pre><code>
+POST {URL} HTTP/{version}
+
+{'user_id':'123432', 'username':'someusername', 'user_link': 'http://example.com/someusername/feed', 'message':'hello world!', 'date':'Sat, 16 May 2015 21:32:15 UTC'}
+</code></pre>
+
+### Receiving Private Messages
+
+Upon receiving a private message at a given URL, the service should accept the request and, depending on the user's settings, return the appropriate response.
+
+In the case of an accepted message, the server should respond with a `201 Created` code (optionally a `200 OK`) and no message body.
+
+In the case of a denied message, when a user does not accept requests from the user named, `403 Forbidden` (optionally a `400 Bad Request`) and no message body.	
+
 ## Replies/Mentions
 
-Since a user will receive posts from all people/accounts that they follow, Replies/Mentions from those people are delivered automatically via the normal feed. It is up to the service to determine whether or not to show users all mentions or just the ones to people the user also follows (though the latter is recommended).
+In the case that a given user replies to, or mentions another known user, the given user's client should alert the mentioned user's server using the provided `reply` URL inside the item that the user would be responding to (example below). The format for sending, and receiving replies or mentions is described below along with the message format.
 
-The question remains, what of Replies/Mentions from those that a user doesn't follow? Due to the broadcast-only nature of the standard this feature must be delegated to the Service Level, though the standard does provide a simple and standardized way for services to provide this feature to users easily.
+### Example 
 
-### Mentions URLs
+<pre><code>
+<item>
+	<guid>3453-3433-dged-sfrf</guid>
+	<description>Anyone out there?</description>
+	<pubDate>Sat, 16 May 2015 21:32:15 UTC</pubDate>
+	<reply>http://example.com/myusername/status/3453-3433-dged-sfrf/reply</reply>
+</item>
+</pre></code>
 
-In the channel declaration an optional element can be declared called reply\_to. If a given service chooses to implement this feature, the reply\_to element contains a simple set of elements that allow the client to form a URL string with the required data to the service of the user being replied to. Services opting-in to Mentions should be able to receive URL request messages from this URL and pass them on to the user they belong to.
+### Sending Replies/Mentions
 
-An example of a Mentions URL is provided below in both what should be supplied via the User's feed and what the end result URL will look like.
+To send messages, the URL in the `reply` element should accept `HTTP POST` requests with a request body in the following JSON format:
 
-```xml
-<reply_to>
-	<!-- The provided URL data -->
-	<link>http://service.tld/reply</link>
-	<reply_to_user_id>sample_userid</reply_to_user_id>
-	<!-- Required Misc data that the sender must include -->
-	<reply_to_status_id />
-	<reply_from_user_id />
-	<reply_status_id />
-	<user_link />
-</reply_to>
-```
+Messages should contain the following elements:
 
-Let's assume I wish to reply to sample\_user's post (status\_id 501) with my post (status\_id 2034). 
+- `user_id`: The id of the user who is sending the message.
+- `username`: The username of the user sending the message.
+- `user_link`: The feed URL of the user sending the message.
+- `status_id`: The id of the status in the user's feed that contains the reply or mention. 
 
-```url
-http://service.tld/reply?reply_to_user_id=sample_username&reply_to_status_id=501&reply_from_user_id=my_userid&reply_status_id=2034&user_link=http%3A%2F%2Fother_service.tld%2Fmy_username
-```
+<pre><code>
+POST {URL} HTTP/{version}
+
+{'user_id':'123432', 'username':'someusername', 'user_link': 'http://example.com/someusername/feed', 'status_id':'2345-643f-ggdg'}
+</code></pre>
+
+### Receiving Replies/Mentions
+
+Upon receiving a private message at a given URL, the service should accept the request and, depending on the user's settings, return the appropriate response.
+
+In the case of an accepted message, the server should respond with a `201 Created` code (optionally a `200 OK`) and no message body.
+
+In the case of a denied message, when a user does not accept requests from the user named, `403 Forbidden` (optionally a `400 Bad Request`) and no message body.	
 
 ## Blocking
 
@@ -203,6 +247,7 @@ Because of the distributed nature of the system, gauging exact follower counts b
 	- count: An attribute of the blocks tag that lists the total number of items in the blocked users in the list.
 - follows: A public URL to the XML feed of the users that a given user follows.
 	- count: An attribute of the follows tag that lists the total number of users that a given user follows.
+- message: An public URL that accepts JSON formatted messages (described above).
 
 ## Required Item Elements
 
@@ -211,6 +256,10 @@ Because of the distributed nature of the system, gauging exact follower counts b
 - description: The HTML text of the post (surrounded with <\!\[CDATA\[\]\]> tags).
 
 ## Optional Item Elements
+
+### Accepting Replies to Statuses
+
+- reply: The URL for replying to a given status. For more information on sending replies see the above Replies section.
  	
 ### Replies
  
@@ -250,17 +299,8 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 		<relocate></relocate>
 		<blocks count=""></blocks>
 		<follows count=""></follows>
-		<!-- Reply and Mention URL -->
-		<reply_to>
-			<!-- The provided URL data -->
-			<link>http://service.tld/reply</link>
-			<reply_to_user_id>sample_userid</reply_to_user_id>
-			<!-- Required Misc data that the sender must include -->
-			<reply_to_status_id />
-			<reply_from_user_id />
-			<reply_status_id />
-			<user_link />
-		</reply_to>
+		<!-- Private Messaging URL -->
+		<message></message>
 		<!-- Misc. -->
 		<docs></docs>
 		<language></language>
@@ -270,6 +310,8 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 			<guid></guid>
 			<pubdate></pubdate>
 			<description><![CDATA[]]></description>
+			<!— Reply and Mention URL —>
+			<reply>http://example.com/{username}/status/{guid}</reply>
 			<!-- Replying -->
 			<in_reply_to_status_id></in_reply_to_status_id>
 			<in_reply_to_user_id></in_reply_to_user_id>
