@@ -313,7 +313,7 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 			<pubdate></pubdate>
 			<description><![CDATA[]]></description>
 			<!-- Reply and Mention URL -->
-			<reply>http://example.com/{username}/status/{guid}</reply>
+			<reply></reply>
 			<!-- Replying -->
 			<in_reply_to_status_id></in_reply_to_status_id>
 			<in_reply_to_user_id></in_reply_to_user_id>
