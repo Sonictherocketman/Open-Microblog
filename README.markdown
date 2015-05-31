@@ -42,6 +42,14 @@
 
 # Overview
 
+If you have suggestions, comments, or complaints about the Open Microblog standard, get in touch 
+via our IRC channel #OpenMicroblog on freenode.
+
+### Notes:
+
+In the coming version update (0.6 -> 0.7) there will be a 'great renaming'. To make the microblog standard more consistent with RSS,
+all microblog elements will be reformatted from snake\_case\_ to camelCase.
+
 ## What is the problem?
 
 In recent years our internet communication has been increasingly controlled by sole private companies. Facebook and Twitter account for an enormous percentage of online communication. This isn't good. Private companies (that aren't treated as utilities) have a number of factors that prevent them from being pure communications networks. Private companies need to make money, then need to constantly make *more* money, and they need to serve changing needs. They need to upgrade their service and add "features". This means that their goals will never align entirely with the goal of open, untampered internet communication. There's one more problem: Private companies can die. They go away. Twitter and Facebook sit high now, but in 10 years? 5 years even? Will they still be around? Its hard to say. Communications that are tied to services and companies like this will die with the companies that built them. This is the problem that the Open Microblog tries to solve.
@@ -60,7 +68,9 @@ True, but the Open Microblogger Standard allows for more social interaction and 
 
 ## How does it work?
 
-Open Microblog is an XML format that models a user's interactions and status updates. A user's public data, on any given service, is laid out in 3 XML files: the user's Feed, their block list, and their following list.
+Open Microblog is an extension on the RSS XML format that models a user's interactions and status updates. A user's public data, on any given service, is laid out in 3 XML files: the user's Feed, their block list, and their following list.
+
+Since Open Microblog is an extension of RSS all elements that are specific to the Open Microblog standard are prefixed by the namespace `microblog` and link to [http://openmicroblog.com](http://openmicroblog.com).
 
 ### The Feed
 
@@ -249,10 +259,12 @@ Because of the distributed nature of the system, gauging exact follower counts b
 - follows: A public URL to the XML feed of the users that a given user follows.
 	- count: An attribute of the follows tag that lists the total number of users that a given user follows.
 - message: An public URL that accepts JSON formatted messages (described above).
+- header: an background image chosen by the user.
+- portrait: a chosen profile picture of the user. 
 
 ## Required Item Elements
 
-- status\_id: A unique, incrementing integer starting from 0 representing the item.
+- guid: A unique, incrementing integer starting from 0 representing the item.
 - pubdate: The datetime when the status was posted.
 - description: The HTML text of the post (surrounded with <\!\[CDATA\[\]\]> tags).
 
@@ -287,42 +299,44 @@ Because of the distributed nature of the system, gauging exact follower counts b
 
 The feed below contains _all_ the possible elements in a single feed. Keep in mind that not all of these elements will be present at one time.
 ``` xml
-<rss version="2.0" extension="microblog">
+<rss version="2.0" xmlns:microblog="http://openmicroblog.com/">
 	<channel>
 		<!-- User Info -->
-		<username></username>
-		<user_id></user_id>
-		<user_full_name></user_full_name>
+		<microblog:username></microblog:username>
+		<microblog:user_id></microblog:user_id>
+		<microblog:user_full_name></microblog:user_full_name>
 		<description><![CDATA[]]></description>
-		<!-- Feed Metadata -->
-		<profile></profile>
+		<microblog:header></microblog:header>
+        <microblog:portrait></microblog:portrait>
+        <!-- Feed Metadata -->
+		<microblog:profile></microblog:profile>
 		<link></link>
-		<next_node></next_node>
-		<relocate></relocate>
-		<blocks count=""></blocks>
-		<follows count=""></follows>
+		<microblog:next_node></microblog:next_node>
+		<microblog:relocate></microblog:relocate>
+		<microblog:blocks count=""></microblog:blocks>
+		<microblog:follows count=""></microblog:follows>
 		<!-- Private Messaging URL -->
-		<message accept="everyone"></message>
+		<microblog:message accept="everyone"></microblog:message>
 		<!-- Misc. -->
 		<docs></docs>
 		<language></language>
 		<lastBuildDate></lastBuildDate>
 		<item>
 			<!-- Status Update -->
-			<guid></guid>
+			<guid isPermalink="false"></guid>
 			<pubdate></pubdate>
 			<description><![CDATA[]]></description>
 			<!-- Reply and Mention URL -->
-			<reply></reply>
+			<microblog:reply></microblog:reply>
 			<!-- Replying -->
-			<in_reply_to_status_id></in_reply_to_status_id>
-			<in_reply_to_user_id></in_reply_to_user_id>
-			<in_reply_to_user_link></in_reply_to_user_link>
+			<microblog:in_reply_to_status_id></microblog:in_reply_to_status_id>
+			<microblog:in_reply_to_user_id></microblog:in_reply_to_user_id>
+			<microblog:in_reply_to_user_link></microblog:in_reply_to_user_link>
 			<!-- Reposting -->
-			<reposted_status_id></reposted_status_id>
-			<reposted_status_pubdate></reposted_status_pubdate>
-			<reposted_status_user_id></reposted_status_user_id>
-			<reposted_status_user_link></reposted_status_user_link>
+			<microblog:reposted_status_id></microblog:reposted_status_id>
+			<microblog:reposted_status_pubdate></microblog:reposted_status_pubdate>
+			<microblog:reposted_status_user_id></microblog:reposted_status_user_id>
+			<microblog:reposted_status_user_link></microblog:reposted_status_user_link>
 			<!-- Misc. -->
 			<language>en</language>
 		</item>
@@ -358,17 +372,18 @@ The feed below contains _all_ the possible elements in a single feed. Keep in mi
 
 The feed below contains _all_ the possible elements in a single feed. Keep in mind that not all of these elements will be present at one time.
 ``` xml
-<rss version="2.0" extension="microblog">
+<rss version="2.0" xmlns:microblog="http://openmicroblog.com/">
 	<channel count="">
-		<username></username>
-		<user_id></user_id>
+		<microblog:username></microblog:username>
+		<microblog:user_id></microblog:user_id>
 		<link></link>
-		<next_node></next_node>
+		<microblog:next_node></microblog:next_node>
 		<lastBuildDate></lastBuildDate>
 		<item>
-			<user_id></user_id>
-			<user_link></user_link>
-			<user_name></user_name>
+            <guid isPermalink="false"></guid>
+			<microblog:user_id></microblog:user_id>
+			<microblog:user_link></microblog:user_link>
+			<microblog:user_name></microblog:user_name>
 		</item>
 	</channel>
 </rss>
