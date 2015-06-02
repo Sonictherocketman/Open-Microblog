@@ -5,7 +5,7 @@ Standard. For more information see:
 http://openmicroblog.com
 
 author: Brian Schrader
-since: 2015-05-19
+since: 2015-06-01
 standard-version: 0.5
 """
 
@@ -218,6 +218,15 @@ class UserFeedItem(Item):
 
 
 if __name__ == '__main__':
-    import requests
-    feed = MainFeed(raw_text=str(requests.get('http://localhost:5000/jjjschmidt/feed.xml').text))
-    print '{} says {}'.format(feed.username, feed.items[-1].description)
+    import sys, requests
+    try:
+        url = sys.argv[1]
+    except IndexError:
+        print 'You must include a url to validate.'; sys.exit(0)
+
+    feed = MainFeed(raw_text=str(requests.get(url).text))
+    if len(feed.items) > 0:
+        description = feed.items[-1].description
+        print '\n{} says, "{}"'.format(feed.username, description)
+    else:
+        print '\n{} hasn\'t said anything yet.'.format(feed.username)

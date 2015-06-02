@@ -66,6 +66,10 @@ Information regarding world events, social injustice, and social upheaval is jus
 
 True, but the Open Microblogger Standard allows for more social interaction and functionality than the broadcast-only medium that is RSS. Open Microblogger is meant to supplement RSS as another means of communicating. You'll see further down, there is a lot that Open Microblogger can do that RSS just can't. Plus Open Microblogger aims to be as RSS compliant as possible and should be compatible in most RSS readers already.
 
+## Is there a validator I can use?
+
+Why yes. Included with this repository is a very simple validator written in Python.
+
 ## How does it work?
 
 Open Microblog is an extension on the RSS XML format that models a user's interactions and status updates. A user's public data, on any given service, is laid out in 3 XML files: the user's Feed, their block list, and their following list.
