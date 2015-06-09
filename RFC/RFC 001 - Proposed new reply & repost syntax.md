@@ -1,6 +1,8 @@
 # Proposed New Repost/Reply Nodes for Item elements
 
-## OLD:
+This is a preliminary document proposing a new syntax for replies and reposting.
+
+## Old:
 
 ```
 <item>
@@ -24,7 +26,7 @@
 </item>
 ```
 
-## NEW:
+## New:
 
 ```
 <item>
@@ -40,7 +42,7 @@
 	<microblog:from userId="a guid goes here">[a link goes here]</microblog:from>
 	<!— Either replies or reposts —>
 	<microblog:regarding>[the id being replied to]</microblog:regarding>
-I	<!— Misc. —>
+	<!— Misc. —>
 	<language>en</language>
 </item>
 ```
