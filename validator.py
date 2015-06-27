@@ -8,9 +8,15 @@ author: Brian Schrader
 since: 2015-06-01
 standard-version: 0.5
 """
+from __future__ import print_function
 
-from lxml import etree
-from defusedxml import lxml
+import sys
+from xml.dom import minidom
+
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib import urlopen
 
 
 class MalformedFeedError(Exception):
@@ -20,9 +26,7 @@ class MalformedFeedError(Exception):
 # Feed Model
 
 MICROBLOG_NAMESPACE = 'microblog'
-NSMAP = {
-        MICROBLOG_NAMESPACE: 'http://openmicroblog.com/',
-    }
+
 
 class Feed(object):
     """ The base object that represents an XML feed. """
@@ -31,7 +35,8 @@ class Feed(object):
         """ Using the raw text provided, pull out the
         relevant information.
         """
-        self._tree = lxml.fromstring(raw_text).find('channel')
+        self._tree = minidom.parseString(
+            raw_text).getElementsByTagName('channel')[0]
 
 
 class MainFeed(Feed):
@@ -39,55 +44,62 @@ class MainFeed(Feed):
     This feed contains a list of status messages which
     the given user has posted.
     """
-    REQUIRED_RSS_ELEMENTS = {'link', 'lastBuildDate', 'language'}
-    OPTIONAL_RSS_ELEMENTS = {'docs', 'description'}
-    REQUIRED_MICROBLOG_ELEMENTS = {'username', 'user_id', 'profile', }
-    OPTIONAL_MICROBLOG_ELEMENTS = {'blocks', 'follows', 'message', 'user_full_name',
-            'next_node'}
+    REQUIRED_RSS_ELEMENTS = set(['link', 'lastBuildDate', 'language'])
+    OPTIONAL_RSS_ELEMENTS = set(['docs', 'description'])
+    REQUIRED_MICROBLOG_ELEMENTS = set(['username', 'user_id', 'profile'])
+    OPTIONAL_MICROBLOG_ELEMENTS = set(['blocks', 'follows', 'message',
+                                       'user_full_name', 'next_node'])
 
     def __init__(self, raw_text=''):
-        super(self.__class__, self).__init__(raw_text)
+        super(MainFeed, self).__init__(raw_text)
         tree = self._tree
         self.items = []
 
         for attr in self.REQUIRED_RSS_ELEMENTS:
             try:
-                value = self._tree.find('{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                        attr=attr),
-                    namespaces=NSMAP).text
-            except AttributeError:
+                value = self._tree.getElementsByTagName(
+                    '{attr}'.format(attr=attr))[0].firstChild
+                if value:
+                    value = value.nodeValue
+                else:
+                    value = ''
+            except IndexError:
                 raise MalformedFeedError(
-                        'Feed must contain all required elements: {} is missing.'\
-                                .format(attr))
+                    'Feed must contain all required elements: '
+                    '{0} is missing.'.format(attr))
             setattr(self, attr, value)
 
         for attr in self.OPTIONAL_RSS_ELEMENTS:
-            value = self._tree.find('{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                    attr=attr),
-                namespaces=NSMAP)
-            if value is not None:
-                setattr(self, attr, value)
+            try:
+                value = self._tree.getElementsByTagName(
+                    '{attr}'.format(attr=attr))[0].firstChild.nodeValue
+            except IndexError:
+                continue
+            setattr(self, attr, value)
 
         for attr in self.REQUIRED_MICROBLOG_ELEMENTS:
             try:
-                value = self._tree.find('{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                        attr=attr),
-                    namespaces=NSMAP).text
-            except AttributeError:
+                value = self._tree.getElementsByTagName(
+                    '{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE, attr=attr)
+                )[0].firstChild.nodeValue
+            except IndexError:
                 raise MalformedFeedError(
-                        'Feed must contain all required elements: {} is missing.'\
-                                .format(attr))
+                    'Feed must contain all required elements: '
+                    '{0} is missing.'.format(attr))
             setattr(self, attr, value)
 
         for attr in self.OPTIONAL_MICROBLOG_ELEMENTS:
-            value = self._tree.find('{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                    attr=attr),
-                namespaces=NSMAP)
-            if value is not None:
+            try:
+                value = self._tree.getElementsByTagName(
+                    '{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE, attr=attr)
+                )[0].firstChild.nodeValue
+            except IndexError:
+                pass
+            else:
                 setattr(self, attr, value)
 
-        for element in tree.xpath('//item'):
-            self.items.append(MainFeedItem(etree.tostring(element)))
+        for element in tree.getElementsByTagName('item'):
+            self.items.append(MainFeedItem(element.toxml('utf-8')))
 
 
 class UserFeed(Feed):
@@ -97,11 +109,11 @@ class UserFeed(Feed):
     """
 
     def __init__(self, raw_text=''):
-        super(self.__class__, self).__init__(raw_text)
+        super(UserFeed, self).__init__(raw_text)
         tree = self._tree
         self.items = []
-        for element in tree.find('item'):
-            self.items.append(UserFeedItem(element.text))
+        for element in tree.getElementsByTagName('item'):
+            self.items.append(UserFeedItem(element.firstChild.nodeValue))
 
 
 # Item Model
@@ -111,59 +123,64 @@ class Item(object):
     """ The base object that represents a generic item in a feed. """
 
     def __init__(self, raw_text=''):
-        self._tree = lxml.fromstring(raw_text)
+        self._tree = minidom.parseString(raw_text)
 
 class MainFeedItem(Item):
     """ Models an item found in the main feed representing
     a status message.
     """
 
-    REQUIRED_RSS_ELEMENTS = {'guid', 'pubDate', 'description'}
-    OPTIONAL_RSS_ELEMENTS = {}
-    REQUIRED_MICROBLOG_ELEMENTS = {}
-    OPTIONAL_MICROBLOG_ELEMENTS = {'reply', 'in_reply_to_user_id', 'in_reply_to_user_link',
-            'in_reply_to_status_id', 'reposted_status_user_id', 'reposted_user_link',
-            'reposted_status_id', 'reposted_status_pubdate', 'language'}
+    REQUIRED_RSS_ELEMENTS = set(['guid', 'pubDate', 'description'])
+    OPTIONAL_RSS_ELEMENTS = set()
+    REQUIRED_MICROBLOG_ELEMENTS = set()
+    OPTIONAL_MICROBLOG_ELEMENTS = set([
+        'reply', 'in_reply_to_user_id', 'in_reply_to_user_link',
+        'in_reply_to_status_id', 'reposted_status_user_id',
+        'reposted_user_link', 'reposted_status_id', 'reposted_status_pubdate',
+        'language'])
 
     def __init__(self, raw_text=''):
-        super(self.__class__, self).__init__(raw_text)
+        super(MainFeedItem, self).__init__(raw_text)
         self.items = []
 
         for attr in self.REQUIRED_RSS_ELEMENTS:
             try:
-                value = self._tree.find('{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                        attr=attr),
-                    namespaces=NSMAP).text
-            except AttributeError:
+                value = self._tree.getElementsByTagName('{attr}'.format(
+                    ns=MICROBLOG_NAMESPACE, attr=attr))[0].firstChild.nodeValue
+            except IndexError:
                 raise MalformedFeedError(
-                        'Feed must contain all required elements: {} is missing.'\
-                                .format(attr))
+                    'Feed must contain all required elements: '
+                    '{0} is missing.'.format(attr))
             setattr(self, attr, value)
 
         for attr in self.OPTIONAL_RSS_ELEMENTS:
-            value = self._tree.find('{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                    attr=attr),
-                namespaces=NSMAP)
-            if value is not None:
-                setattr(self, attr, value)
+            try:
+                value = self._tree.getElementsByTagName(
+                    '{attr}'.format(ns=MICROBLOG_NAMESPACE, attr=attr)
+                )[0].firstChild.nodeValue
+            except IndexError:
+                continue
+            setattr(self, attr, value)
 
         for attr in self.REQUIRED_MICROBLOG_ELEMENTS:
             try:
-                value = self._tree.find('{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                        attr=attr),
-                    namespaces=NSMAP).text
-            except AttributeError:
+                value = self._tree.getElementsByTagName(
+                    '{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE, attr=attr)
+                )[0].firstChild.nodeValue
+            except IndexError:
                 raise MalformedFeedError(
-                        'Feed must contain all required elements: {} is missing.'\
-                                .format(attr))
+                    'Feed must contain all required elements: '
+                    '{0} is missing.'.format(attr))
             setattr(self, attr, value)
 
         for attr in self.OPTIONAL_MICROBLOG_ELEMENTS:
-            value = self._tree.find('{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                    attr=attr),
-                namespaces=NSMAP)
-            if value is not None:
-                setattr(self, attr, value)
+            try:
+                value = self._tree.getElementsByTagName(
+                    '{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE, attr=attr)
+                )[0].firstChild.nodeValue
+            except IndexError:
+                continue
+            setattr(self, attr, value)
 
 
 class UserFeedItem(Item):
@@ -171,62 +188,64 @@ class UserFeedItem(Item):
     representing a user.
     """
 
-    REQUIRED_RSS_ELEMENTS = {}
-    OPTIONAL_RSS_ELEMENTS = {}
-    REQUIRED_MICROBLOG_ELEMENTS = {}
-    OPTIONAL_MICROBLOG_ELEMENTS = {'user_id', 'username', 'user_link'}
+    REQUIRED_RSS_ELEMENTS = set()
+    OPTIONAL_RSS_ELEMENTS = set()
+    REQUIRED_MICROBLOG_ELEMENTS = set()
+    OPTIONAL_MICROBLOG_ELEMENTS = set(['user_id', 'username', 'user_link'])
 
     def __init__(self, raw_text=''):
-        super(self.__class__, self).__init__(raw_text)
+        super(UserFeedItem, self).__init__(raw_text)
         self.items = []
 
         for attr in self.REQUIRED_RSS_ELEMENTS:
             try:
-                value = self._tree.find('{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                        attr=attr),
-                    namespaces=NSMAP).text
-            except AttributeError:
+                value = self._tree.getElementsByTagName(
+                    '{attr}'.format(attr=attr))[0].firstChild.nodeValue
+            except IndexError:
                 raise MalformedFeedError(
-                        'Feed must contain all required elements: {} is missing.'\
-                                .format(attr))
+                    'Feed must contain all required elements: '
+                    '{0} is missing.'.format(attr))
             setattr(self, attr, value)
 
         for attr in self.OPTIONAL_RSS_ELEMENTS:
-            value = self._tree.find('{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                    attr=attr),
-                namespaces=NSMAP)
-            if value is not None:
-                setattr(self, attr, value)
+            try:
+                value = self._tree.getElementsByTagName(
+                    '{attr}'.format(attr=attr))[0].firstChild.nodeValue
+            except IndexError:
+                continue
+            setattr(self, attr, value)
 
         for attr in self.REQUIRED_MICROBLOG_ELEMENTS:
             try:
-                value = self._tree.find('{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                        attr=attr),
-                    namespaces=NSMAP).text
-            except AttributeError:
+                value = self._tree.getElementsByTagName(
+                    '{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE, attr=attr)
+                )[0].firstChild.nodeValue
+            except IndexError:
                 raise MalformedFeedError(
-                        'Feed must contain all required elements: {} is missing.'\
-                                .format(attr))
+                    'Feed must contain all required elements: '
+                    '{0} is missing.'.format(attr))
             setattr(self, attr, value)
 
         for attr in self.OPTIONAL_MICROBLOG_ELEMENTS:
-            value = self._tree.find('{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE,
-                    attr=attr),
-                namespaces=NSMAP)
-            if value is not None:
-                setattr(self, attr, value)
+            try:
+                value = self._tree.getElementsByTagName(
+                    '{ns}:{attr}'.format(ns=MICROBLOG_NAMESPACE, attr=attr)
+                )[0].firstChild.nodeValue
+            except IndexError:
+                continue
+            setattr(self, attr, value)
 
 
 if __name__ == '__main__':
-    import sys, requests
     try:
         url = sys.argv[1]
     except IndexError:
-        print 'You must include a url to validate.'; sys.exit(0)
+        print('You must include a url to validate.')
+        sys.exit(1)
 
-    feed = MainFeed(raw_text=str(requests.get(url).text))
+    feed = MainFeed(raw_text=urlopen(url).read())
     if len(feed.items) > 0:
         description = feed.items[-1].description
-        print '\n{} says, "{}"'.format(feed.username, description)
+        print('\n{0} says, "{1}"'.format(feed.username, description))
     else:
-        print '\n{} hasn\'t said anything yet.'.format(feed.username)
+        print('\n{0} hasn\'t said anything yet.'.format(feed.username))
